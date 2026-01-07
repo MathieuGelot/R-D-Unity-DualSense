@@ -250,29 +250,29 @@ public class WrapperDS5W_Native
     const string DLL_NAME = "WrapperDS5W";
 
     [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-    public extern static IntPtr Wrapper_InitControllersAPI();
+    public extern static IntPtr InitControllersAPI();
     [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-    public extern static IntPtr Wrapper_ShutdownControllersAPI();
+    public extern static IntPtr ShutdownControllersAPI();
     [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-    public extern static IntPtr Wrapper_GetControllersContext(int _id);
+    public extern static void CreateDevice(int _id);
     [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-    public extern static IntPtr Wrapper_FreeControllerContext(IntPtr _controllerContext);
+    public extern static void FreeDevice(int _id);
     [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-    public extern static void Wrapper_SetOutputState(IntPtr _controllerContext, Wrapper_OutputState _outputState);
+    public extern static void Update();
     [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-    public extern static IntPtr Wrapper_GetButtonState(IntPtr _controllerContext, Wrapper_Buttons _btn);
+    public extern static bool GetButtonState(int _id, Wrapper_Buttons _btn);
     [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-    public extern static byte Wrapper_GetTriggerValue(IntPtr _controllerContext, Wrapper_Side _trigger);
+    public extern static byte GetTriggerValue(int _id, Wrapper_Side _trigger);
     [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-    public extern static Wrapper_AnalogStick Wrapper_GetStickPosition(IntPtr _controllerContext, Wrapper_Side _stick);
+    public extern static Wrapper_AnalogStick GetStickPosition(int _id, Wrapper_Side _stick);
     [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-    public extern static Wrapper_Touch Wrapper_GetTouchPadPosition(IntPtr _controllerContext, int _fingerID);
+    public extern static Wrapper_Touch GetTouchPadPosition(int _id, int _fingerID);
     [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-    public extern static Wrapper_Vector3 Wrapper_GetGyroscopeValue(IntPtr _controllerContext);
+    public extern static Wrapper_Vector3 GetGyroscopeValue(int _id);
     [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-    public extern static Wrapper_Vector3 Wrapper_GetAccelerometerValue(IntPtr _controllerContext);
+    public extern static Wrapper_Vector3 GetAccelerometerValue(int _id);
     [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-    public extern static void Wrapper_SetRumble(Wrapper_OutputState _outputState, Wrapper_Side _rumble, byte _rumbleStrength);
+    public extern static void SetRumbleEffect(int _id, Wrapper_Side _rumble, byte _rumbleStrength);
     [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-    public extern static void Wrapper_SetTriggerEffects(Wrapper_OutputState _outputState, Wrapper_Side _trigger, Wrapper_TriggerEffect _triggerEffect);
+    public extern static void SetTriggerEffect(int _id, Wrapper_Side _rumble, Wrapper_TriggerEffect _effect);
 }

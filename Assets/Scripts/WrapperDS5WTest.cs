@@ -10,26 +10,20 @@ public class WrapperDS5WTest : MonoBehaviour
     void Start()
     {
         wrapperDS5W = new WrapperDS5W_Handler();
-        IntPtr ctx = wrapperDS5W.GetControllersContext(0);
-        if(ctx != IntPtr.Zero)
-        {
-            controllerCtx = ctx;
-        }
+        wrapperDS5W.CreateDevice(0);
     }
 
     void Update()
     {
-        IntPtr a = wrapperDS5W.GetButtonState(controllerCtx, WrapperDS5W_Native.Wrapper_Buttons.CROSS);
-        string state = Marshal.PtrToStringAnsi(a);
-        Debug.Log(state);
+        wrapperDS5W.Update();
+        if(wrapperDS5W.GetButtonState(0, WrapperDS5W_Native.Wrapper_Buttons.CROSS))
+        {
+            Debug.Log("Cross has been pressed");
+        }
     }
 
     private void OnDestroy()
     {
-        if(controllerCtx != IntPtr.Zero)
-        {
-            wrapperDS5W.FreeControllersContext(controllerCtx);
-        }
         wrapperDS5W?.Dispose();
     }
 }
