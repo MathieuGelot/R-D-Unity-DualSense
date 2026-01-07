@@ -6,76 +6,136 @@ public class WrapperDS5W_Handler : IDisposable
 {
     private bool _initialized = false;
 
-    public WrapperDS5W_Handler()
+    public WrapperDS5W_Handler(bool _showLogs = false)
     {
-        Debug.Log($"{Marshal.PtrToStringAnsi(WrapperDS5W_Native.InitControllersAPI())}");
+        WrapperDS5W_Native.InitControllersAPI();
         _initialized = true;
+        if (_showLogs)
+        {
+            ShowLogs();
+        }
     }
 
-    public void CreateDevice(int _id)
+    public void ShowLogs()
+    {
+        EnsureInit();
+        Debug.Log($"WrapperDS5W Log :\n{Marshal.PtrToStringAnsi(WrapperDS5W_Native.ShowLogs())}");
+    }
+
+    public void CreateDevice(int _id, bool _showLogs = false)
     {
         EnsureInit();
         WrapperDS5W_Native.CreateDevice(_id);
+        if (_showLogs)
+        {
+            ShowLogs();
+        }
     }
 
-    public void FreeDevice(int _id)
+    public void FreeDevice(int _id, bool _showLogs = false)
     {
         EnsureInit();
         WrapperDS5W_Native.FreeDevice(_id);
+        if (_showLogs)
+        {
+            ShowLogs();
+        }
     }
 
-    public void Update()
+    public void Update(bool _showLogs = false)
     {
         EnsureInit();
         WrapperDS5W_Native.Update();
+        if (_showLogs)
+        {
+            ShowLogs();
+        }
     }
 
-    public bool GetButtonState(int _id, WrapperDS5W_Native.Wrapper_Buttons _btn)
+    public bool GetButtonState(int _id, WrapperDS5W_Native.Wrapper_Buttons _btn, bool _showLogs = false)
     {
         EnsureInit();
-        return WrapperDS5W_Native.GetButtonState(_id, _btn);
+        bool value = WrapperDS5W_Native.GetButtonState(_id, _btn);
+        if (_showLogs)
+        {
+            ShowLogs();
+        }
+        return value;
     }
 
-    public byte GetTriggerValue(int _id, WrapperDS5W_Native.Wrapper_Side _trigger)
+    public byte GetTriggerValue(int _id, WrapperDS5W_Native.Wrapper_Side _trigger, bool _showLogs = false)
     {
         EnsureInit();
-        return WrapperDS5W_Native.GetTriggerValue(_id, _trigger);
+        byte value = WrapperDS5W_Native.GetTriggerValue(_id, _trigger);
+        if (_showLogs)
+        {
+            ShowLogs();
+        }
+        return value;
     }
 
-    public WrapperDS5W_Native.Wrapper_AnalogStick GetStickPosition(int _id, WrapperDS5W_Native.Wrapper_Side _stick)
+    public WrapperDS5W_Native.Wrapper_AnalogStick GetStickPosition(int _id, WrapperDS5W_Native.Wrapper_Side _stick, bool _showLogs = false)
     {
         EnsureInit();
-        return WrapperDS5W_Native.GetStickPosition(_id, _stick);
+        WrapperDS5W_Native.Wrapper_AnalogStick value = WrapperDS5W_Native.GetStickPosition(_id, _stick);
+        if (_showLogs)
+        {
+            ShowLogs();
+        }
+        return value;
     }
 
-    public WrapperDS5W_Native.Wrapper_Touch GetTouchPadPosition(int _id, int _fingerID)
+    public WrapperDS5W_Native.Wrapper_Touch GetTouchPadPosition(int _id, int _fingerID, bool _showLogs = false)
     {
         EnsureInit();
-        return WrapperDS5W_Native.GetTouchPadPosition(_id, _fingerID);
+        WrapperDS5W_Native.Wrapper_Touch value = WrapperDS5W_Native.GetTouchPadPosition(_id, _fingerID);
+        if (_showLogs)
+        {
+            ShowLogs();
+        }
+        return value;
     }
 
-    public WrapperDS5W_Native.Wrapper_Vector3 GetGyroscopeValue(int _id)
+    public WrapperDS5W_Native.Wrapper_Vector3 GetGyroscopeValue(int _id, bool _showLogs = false)
     {
         EnsureInit();
-        return WrapperDS5W_Native.GetGyroscopeValue(_id);
+        WrapperDS5W_Native.Wrapper_Vector3 value = WrapperDS5W_Native.GetGyroscopeValue(_id);
+        if (_showLogs)
+        {
+            ShowLogs();
+        }
+        return value;
     }
 
-    public WrapperDS5W_Native.Wrapper_Vector3 GetAccelerometerValue(int _id)
+    public WrapperDS5W_Native.Wrapper_Vector3 GetAccelerometerValue(int _id, bool _showLogs = false)
     {
         EnsureInit();
-        return WrapperDS5W_Native.GetAccelerometerValue(_id);
+        WrapperDS5W_Native.Wrapper_Vector3 value = WrapperDS5W_Native.GetAccelerometerValue(_id);
+        if (_showLogs)
+        { 
+            ShowLogs();
+        }
+        return value;
     }
 
-    public void SetRumbleEffect(int _id, WrapperDS5W_Native.Wrapper_Side _rumble, byte _rumbleStrength)
+    public void SetRumbleEffect(int _id, WrapperDS5W_Native.Wrapper_Side _rumble, byte _rumbleStrength, bool _showLogs = false)
     {
         EnsureInit();
         WrapperDS5W_Native.SetRumbleEffect(_id, _rumble, _rumbleStrength);
+        if (_showLogs)
+        {
+            ShowLogs();
+        }
     }
 
-    public void SetTriggerEffect(int _id, WrapperDS5W_Native.Wrapper_Side _trigger, WrapperDS5W_Native.Wrapper_TriggerEffect _effect)
+    public void SetTriggerEffect(int _id, WrapperDS5W_Native.Wrapper_Side _trigger, WrapperDS5W_Native.Wrapper_TriggerEffect _effect, bool _showLogs = false)
     {
         EnsureInit();
         WrapperDS5W_Native.SetTriggerEffect(_id, _trigger, _effect);
+        if (_showLogs)
+        {
+            ShowLogs();
+        }
     }
 
     private void EnsureInit()
@@ -91,7 +151,8 @@ public class WrapperDS5W_Handler : IDisposable
     {
         if (_initialized)
         {
-            Debug.Log($"{Marshal.PtrToStringAnsi(WrapperDS5W_Native.ShutdownControllersAPI())}");
+            WrapperDS5W_Native.ShutdownControllersAPI();
+            ShowLogs();
             _initialized = false;
         }
     }

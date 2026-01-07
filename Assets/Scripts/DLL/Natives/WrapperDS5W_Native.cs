@@ -250,9 +250,9 @@ public class WrapperDS5W_Native
     const string DLL_NAME = "WrapperDS5W";
 
     [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-    public extern static IntPtr InitControllersAPI();
+    public extern static void InitControllersAPI();
     [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-    public extern static IntPtr ShutdownControllersAPI();
+    public extern static void ShutdownControllersAPI();
     [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
     public extern static void CreateDevice(int _id);
     [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
@@ -275,4 +275,6 @@ public class WrapperDS5W_Native
     public extern static void SetRumbleEffect(int _id, Wrapper_Side _rumble, byte _rumbleStrength);
     [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
     public extern static void SetTriggerEffect(int _id, Wrapper_Side _rumble, Wrapper_TriggerEffect _effect);
+    [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+    public extern static IntPtr ShowLogs();
 }
