@@ -92,6 +92,19 @@ public class DualSenseHapticsWindow : EditorWindow
         squarePressed = controller.GetButtonState(0, WrapperDS5W_Native.Wrapper_Buttons.SQUARE);
         circlePressed = controller.GetButtonState(0, WrapperDS5W_Native.Wrapper_Buttons.CIRCLE);
 
+        if (playHaptics)
+        {
+            controller.SetRumbleEffect(0, WrapperDS5W_Native.Wrapper_Side.LEFT, currentPreset.leftRumble);
+            controller.SetRumbleEffect(0, WrapperDS5W_Native.Wrapper_Side.RIGHT, currentPreset.rightRumble);
+
+            WrapperDS5W_Native.Wrapper_TriggerEffect triggerEffect = new WrapperDS5W_Native.Wrapper_TriggerEffect();
+            triggerEffect.effectType = WrapperDS5W_Native.Wrapper_TriggerEffectType.SectionResitance;
+            triggerEffect.Union.Section.startPosition = 0x00;
+            triggerEffect.Union.Section.endPosition = 0x60;
+
+            // controller.SetTriggerEffect(0, WrapperDS5W_Native.Wrapper_Side.LEFT, triggerEffect);
+        }
+
         Repaint(); // Force OnGUI() to redraw
     }
      
@@ -100,12 +113,6 @@ public class DualSenseHapticsWindow : EditorWindow
         GUILayout.Label("DualSense Haptics Tool", EditorStyles.boldLabel);
         ControllerUI();
         PresetSettingsUI();
-
-        if (playHaptics)
-        {
-            controller.SetRumbleEffect(0, WrapperDS5W_Native.Wrapper_Side.LEFT, currentPreset.leftRumble);
-            controller.SetRumbleEffect(0, WrapperDS5W_Native.Wrapper_Side.RIGHT, currentPreset.leftRumble);
-        }
     }
 
     private void ControllerUI()
@@ -166,15 +173,13 @@ public class DualSenseHapticsWindow : EditorWindow
         playHaptics = EditorGUILayout.Toggle("Play Haptics", playHaptics);
         if(!playHaptics)
         {
-
+            StopAllHapticsOnController();
         }
 
         currentPreset = (DefaultHapticPreset)EditorGUILayout.ObjectField("Preset", currentPreset,  typeof(DefaultHapticPreset), false);
 
         currentPreset.leftRumble = (byte)EditorGUILayout.IntSlider("Left Motor", (int)currentPreset.leftRumble, 0, 255);
-        currentPreset.rightRumble = (byte)EditorGUILayout.IntSlider("Left Motor", (int)currentPreset.rightRumble, 0, 255);
-
-
+        currentPreset.rightRumble = (byte)EditorGUILayout.IntSlider("Right Motor", (int)currentPreset.rightRumble, 0, 255);
     }
 
     private void StopAllHapticsOnController()
