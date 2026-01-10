@@ -2,6 +2,7 @@ using System;
 using UnityEditor;
 using UnityEditor.Presets;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class DualSenseHapticsWindow : EditorWindow
 {
@@ -9,7 +10,6 @@ public class DualSenseHapticsWindow : EditorWindow
     WrapperDS5W_Handler controller;
     HapticPreset defaultPreset;
     HapticPreset currentPreset;
-    HapticPreset lastPreset;
 
     // Path
     string texturesPath = "Assets/HapticsTool/Sprites/Btns/";
@@ -75,7 +75,7 @@ public class DualSenseHapticsWindow : EditorWindow
     {
         defaultPreset = ScriptableObject.CreateInstance<HapticPreset>();
         currentPreset = defaultPreset;
-        currentPresetName = currentPreset.name;
+        currentPresetName = currentPreset.presetName;
 
         controller = new WrapperDS5W_Handler(true);
         controller.CreateDevice(0, true);
@@ -187,7 +187,7 @@ public class DualSenseHapticsWindow : EditorWindow
             gamepadRect.width * 0.15f,
             gamepadRect.height * 0.6f
         );
-        Color leftColor = new Color(1, 0, 0, currentPreset.leftRumble / 255f);
+        Color leftColor = new Color(1, 0, 0, leftRumble / 255f);
         EditorGUI.DrawRect(leftGrip, leftColor);
 
         Rect rightGrip = new Rect(
@@ -196,7 +196,7 @@ public class DualSenseHapticsWindow : EditorWindow
           gamepadRect.width * 0.15f,
           gamepadRect.height * 0.6f
         );
-        Color rightColor = new Color(1, 0, 0, currentPreset.rightRumble / 255f);
+        Color rightColor = new Color(1, 0, 0, rightRumble / 255f);
         EditorGUI.DrawRect(rightGrip, rightColor);
     }
 
@@ -204,16 +204,13 @@ public class DualSenseHapticsWindow : EditorWindow
     {
         playHaptics = EditorGUILayout.Toggle("Play Haptics", playHaptics);
 
-        lastPreset = currentPreset;
+        HapticPreset lastPreset = currentPreset;
         currentPreset = (HapticPreset)EditorGUILayout.ObjectField("Preset", currentPreset, typeof(HapticPreset), false);
         if(currentPreset != null)
         {
             if(currentPreset != lastPreset)
             {
-                leftRumble = currentPreset.leftRumble;
-                rightRumble = currentPreset.rightRumble;
-                leftTriggerEffect = currentPreset.leftTriggerEffect; 
-                rightTriggerEffect = currentPreset.rightTriggerEffect;
+                SetUIPresetValues();
             }
 
             leftTriggerEffect = currentPreset.leftTriggerEffect;
@@ -310,7 +307,7 @@ public class DualSenseHapticsWindow : EditorWindow
 
         WrapperDS5W_Native.Wrapper_TriggerEffect triggerEffect = new WrapperDS5W_Native.Wrapper_TriggerEffect();
 
-        triggerEffect.effectType = WrapperDS5W_Native.Wrapper_TriggerEffectType.NoResitance;
+        triggerEffect.effectType = 0x00; // No resistance
 
         controller.SetTriggerEffect(0, WrapperDS5W_Native.Wrapper_Side.LEFT, triggerEffect);
         controller.SetTriggerEffect(0, WrapperDS5W_Native.Wrapper_Side.RIGHT, triggerEffect);
@@ -323,7 +320,8 @@ public class DualSenseHapticsWindow : EditorWindow
 
         if (existing == null) // Create a new asset
         {
-            HapticPreset newPreset = Instantiate(currentPreset);
+            HapticPreset newPreset = ScriptableObject.CreateInstance<HapticPreset>();
+            SetPresetData(newPreset);
             AssetDatabase.CreateAsset(newPreset, path); 
             currentPreset = newPreset;
         }
@@ -332,22 +330,36 @@ public class DualSenseHapticsWindow : EditorWindow
             if (EditorUtility.DisplayDialog("Overwrite Preset?", $"Preset '{currentPresetName}' already exists.\nOverwrite it?", "Confirm", "Cancel"))
             {
                 Undo.RecordObject(existing, "Overwrite Preset");
-                CopyPresetData(existing);
+                SetPresetData(existing);
                 EditorUtility.SetDirty(existing);
                 AssetDatabase.SaveAssets();
                 currentPreset = existing;
+                SetUIPresetValues();
             }
         }
     }
 
-    private void CopyPresetData(HapticPreset _target)
+    private void SetUIPresetValues()
+    {
+        currentPresetName = currentPreset.presetName;
+
+        leftRumble = currentPreset.leftRumble;
+        rightRumble = currentPreset.rightRumble;
+
+        leftTriggerEffect = currentPreset.leftTriggerEffect;
+        rightTriggerEffect = currentPreset.rightTriggerEffect;
+    }
+
+    private void SetPresetData(HapticPreset _target)
     {
         _target.presetName = currentPresetName;
 
-        _target.leftRumble = currentPreset.leftRumble;
-        _target.rightRumble = currentPreset.rightRumble;
+        _target.leftRumble = leftRumble;
+        _target.rightRumble = rightRumble;
 
-        _target.leftTriggerEffect = currentPreset.leftTriggerEffect;
-        _target.rightTriggerEffect = currentPreset.rightTriggerEffect;
+        _target.leftTriggerEffect = leftTriggerEffect;
+        _target.rightTriggerEffect = rightTriggerEffect;
+
+
     }
 }

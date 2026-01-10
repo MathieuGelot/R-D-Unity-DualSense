@@ -65,11 +65,9 @@ public class WrapperDS5W_Native
 
     public enum Wrapper_TriggerEffectType : byte
     {
-        NoResitance = 0x00,
         ContinuousResistance = 0x01,
         SectionResistance = 0x02,
         EffectEx = 0x26,
-        Calibrate = 0xFC
     }
 
     public enum Wrapper_LedBrightness : byte
@@ -140,6 +138,7 @@ public class WrapperDS5W_Native
         byte level;
     }
 
+    [Serializable]
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct Wrapper_TriggerEffect
     {
