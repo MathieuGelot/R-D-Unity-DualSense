@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEditor.Presets;
 using UnityEngine;
@@ -6,12 +7,14 @@ public class DualSenseHapticsWindow : EditorWindow
 {
     // Extern object
     WrapperDS5W_Handler controller;
-    DefaultHapticPreset defaultPreset;
-    DefaultHapticPreset currentPreset;
+    HapticPreset defaultPreset;
+    HapticPreset currentPreset;
+    HapticPreset lastPreset;
 
     // Path
     string texturesPath = "Assets/HapticsTool/Sprites/Btns/";
-    string defaultPresetPath = "Assets/HapticsTool/DefaultHapticPreset.asset"; 
+    string currentPresetPath = "Assets/HapticsTool/Presets/";
+    string currentPresetName = "None";
 
     // Textures for UI
     Texture2D gamepadTex;
@@ -19,7 +22,25 @@ public class DualSenseHapticsWindow : EditorWindow
     Texture2D triangleTex;
     Texture2D circleTex;
     Texture2D squareTex;
-    
+
+    // Setters
+    public enum TriggerEffectType
+    {
+        ContinuousResistance,
+        SectionResistance,
+        EffectEx
+    }
+    TriggerEffectType currentLeftTriggerType = TriggerEffectType.ContinuousResistance;
+    TriggerEffectType currentRightTriggerType = TriggerEffectType.ContinuousResistance;
+    byte[] currentLeftTriggerValues = new byte[5];
+    bool currentLeftTriggerKeepEffect = false;
+    byte[] currentRightTriggerValues = new byte[5];
+    bool currentRightTriggerKeepEffect = false;
+    WrapperDS5W_Native.Wrapper_TriggerEffect leftTriggerEffect= new WrapperDS5W_Native.Wrapper_TriggerEffect();
+    WrapperDS5W_Native.Wrapper_TriggerEffect rightTriggerEffect = new WrapperDS5W_Native.Wrapper_TriggerEffect();
+    byte leftRumble;
+    byte rightRumble;
+
     // Bool for four buttons state
     bool crossPressed = false;
     bool trianglePressed = false;
@@ -50,15 +71,12 @@ public class DualSenseHapticsWindow : EditorWindow
         window.ShowUtility(); // Undockable (used to avoid resize)
     }
 
-    private void LoadDefaultPreset()
-    {
-        defaultPreset = Instantiate(AssetDatabase.LoadAssetAtPath<DefaultHapticPreset>(defaultPresetPath));
-        currentPreset = defaultPreset;
-    }
-
     private void OnEnable()
     {
-        LoadDefaultPreset();
+        defaultPreset = ScriptableObject.CreateInstance<HapticPreset>();
+        currentPreset = defaultPreset;
+        currentPresetName = currentPreset.name;
+
         controller = new WrapperDS5W_Handler(true);
         controller.CreateDevice(0, true);
 
@@ -94,15 +112,15 @@ public class DualSenseHapticsWindow : EditorWindow
 
         if (playHaptics)
         {
-            controller.SetRumbleEffect(0, WrapperDS5W_Native.Wrapper_Side.LEFT, currentPreset.leftRumble);
-            controller.SetRumbleEffect(0, WrapperDS5W_Native.Wrapper_Side.RIGHT, currentPreset.rightRumble);
+            controller.SetRumbleEffect(0, WrapperDS5W_Native.Wrapper_Side.LEFT, leftRumble);
+            controller.SetRumbleEffect(0, WrapperDS5W_Native.Wrapper_Side.RIGHT, rightRumble);
 
-            WrapperDS5W_Native.Wrapper_TriggerEffect triggerEffect = new WrapperDS5W_Native.Wrapper_TriggerEffect();
-            triggerEffect.effectType = WrapperDS5W_Native.Wrapper_TriggerEffectType.SectionResitance;
-            triggerEffect.Union.Section.startPosition = 0x00;
-            triggerEffect.Union.Section.endPosition = 0x60;
-
-            // controller.SetTriggerEffect(0, WrapperDS5W_Native.Wrapper_Side.LEFT, triggerEffect);
+            controller.SetTriggerEffect(0, WrapperDS5W_Native.Wrapper_Side.LEFT, leftTriggerEffect);
+            controller.SetTriggerEffect(0, WrapperDS5W_Native.Wrapper_Side.RIGHT, rightTriggerEffect);
+        }
+        else
+        {
+            StopAllHapticsOnController();
         }
 
         Repaint(); // Force OnGUI() to redraw
@@ -113,6 +131,20 @@ public class DualSenseHapticsWindow : EditorWindow
         GUILayout.Label("DualSense Haptics Tool", EditorStyles.boldLabel);
         ControllerUI();
         PresetSettingsUI();
+
+        EditorGUILayout.BeginHorizontal(); // Ligne horizontale : tout ce qui est dedans sera côte à côte
+
+        // ----- COLONNE GAUCHE -----
+        EditorGUILayout.BeginVertical(GUILayout.Width(position.width / 2)); // 50% de la fenêtre
+        LeftSettingsUI();
+        EditorGUILayout.EndVertical();
+
+        // ----- COLONNE DROITE -----
+        EditorGUILayout.BeginVertical(GUILayout.Width(position.width / 2)); // 50% de la fenêtre
+        RightSettingsUI();
+        EditorGUILayout.EndVertical();
+
+        EditorGUILayout.EndHorizontal(); // Fin ligne horizontale
     }
 
     private void ControllerUI()
@@ -171,15 +203,104 @@ public class DualSenseHapticsWindow : EditorWindow
     private void PresetSettingsUI()
     {
         playHaptics = EditorGUILayout.Toggle("Play Haptics", playHaptics);
-        if(!playHaptics)
+
+        lastPreset = currentPreset;
+        currentPreset = (HapticPreset)EditorGUILayout.ObjectField("Preset", currentPreset, typeof(HapticPreset), false);
+        if(currentPreset != null)
         {
-            StopAllHapticsOnController();
+            if(currentPreset != lastPreset)
+            {
+                leftRumble = currentPreset.leftRumble;
+                rightRumble = currentPreset.rightRumble;
+                leftTriggerEffect = currentPreset.leftTriggerEffect; 
+                rightTriggerEffect = currentPreset.rightTriggerEffect;
+            }
+
+            leftTriggerEffect = currentPreset.leftTriggerEffect;
+            currentPresetName = EditorGUILayout.TextField("Preset Name : ", currentPresetName);
+            if (GUILayout.Button("Save"))
+            {
+                SavePreset();
+            }
         }
+    }
 
-        currentPreset = (DefaultHapticPreset)EditorGUILayout.ObjectField("Preset", currentPreset,  typeof(DefaultHapticPreset), false);
+    private void LeftSettingsUI()
+    {
+        leftRumble = (byte)EditorGUILayout.IntSlider("Left Motor", (int)leftRumble, 0, 255);
+        currentLeftTriggerType = (TriggerEffectType)EditorGUILayout.EnumPopup("Left Trigger Type", currentLeftTriggerType);
+        switch (currentLeftTriggerType)
+        {
+            case TriggerEffectType.ContinuousResistance:
+                currentLeftTriggerValues[0] = (byte)EditorGUILayout.IntSlider("Start Position", (int)currentLeftTriggerValues[0], 0, 255);
+                currentLeftTriggerValues[1] = (byte)EditorGUILayout.IntSlider("Force", (int)currentLeftTriggerValues[1], 0, 255);
+                leftTriggerEffect.effectType = WrapperDS5W_Native.Wrapper_TriggerEffectType.ContinuousResistance;
+                leftTriggerEffect.Union.Continuous.startPosition = currentLeftTriggerValues[0];
+                leftTriggerEffect.Union.Continuous.force = currentLeftTriggerValues[1];
+                break;
+            case TriggerEffectType.SectionResistance:
+                currentLeftTriggerValues[0] = (byte)EditorGUILayout.IntSlider("Start Position", (int)currentLeftTriggerValues[0], 0, 255);
+                currentLeftTriggerValues[1] = (byte)EditorGUILayout.IntSlider("End Position", (int)currentLeftTriggerValues[1], 0, 255);
+                leftTriggerEffect.effectType = WrapperDS5W_Native.Wrapper_TriggerEffectType.SectionResistance;
+                leftTriggerEffect.Union.Section.startPosition = currentLeftTriggerValues[0];
+                leftTriggerEffect.Union.Section.endPosition = currentLeftTriggerValues[1];
+                break;
+            case TriggerEffectType.EffectEx:
+                currentLeftTriggerKeepEffect = EditorGUILayout.Toggle("Keep Effect", currentLeftTriggerKeepEffect);
+                currentLeftTriggerValues[0] = (byte)EditorGUILayout.IntSlider("Start Position", (int)currentLeftTriggerValues[0], 0, 255);
+                currentLeftTriggerValues[1] = (byte)EditorGUILayout.IntSlider("Begin Force", (int)currentLeftTriggerValues[1], 0, 255);
+                currentLeftTriggerValues[2] = (byte)EditorGUILayout.IntSlider("Middle Force", (int)currentLeftTriggerValues[2], 0, 255);
+                currentLeftTriggerValues[3] = (byte)EditorGUILayout.IntSlider("End Force", (int)currentLeftTriggerValues[3], 0, 255);
+                currentLeftTriggerValues[4] = (byte)EditorGUILayout.IntSlider("Frequency", (int)currentLeftTriggerValues[4], 0, 255);
+                leftTriggerEffect.effectType = WrapperDS5W_Native.Wrapper_TriggerEffectType.EffectEx;
+                leftTriggerEffect.Union.EffectEx.startPosition = currentLeftTriggerValues[0];
+                leftTriggerEffect.Union.EffectEx.beginForce = currentLeftTriggerValues[1];
+                leftTriggerEffect.Union.EffectEx.middleForce = currentLeftTriggerValues[2];
+                leftTriggerEffect.Union.EffectEx.frequency = currentLeftTriggerValues[3];
+                leftTriggerEffect.Union.EffectEx.beginForce = currentLeftTriggerValues[4];
+                leftTriggerEffect.Union.EffectEx.keepEffect = currentLeftTriggerKeepEffect == false ? (byte)0x00 : (byte)0x01;
+                break;
+            default: break;
+        }
+    }
 
-        currentPreset.leftRumble = (byte)EditorGUILayout.IntSlider("Left Motor", (int)currentPreset.leftRumble, 0, 255);
-        currentPreset.rightRumble = (byte)EditorGUILayout.IntSlider("Right Motor", (int)currentPreset.rightRumble, 0, 255);
+    private void RightSettingsUI()
+    {
+        rightRumble = (byte)EditorGUILayout.IntSlider("Right Motor", (int)rightRumble, 0, 255);
+        currentRightTriggerType = (TriggerEffectType)EditorGUILayout.EnumPopup("Right Trigger Type", currentRightTriggerType);
+        switch (currentRightTriggerType)
+        {
+            case TriggerEffectType.ContinuousResistance:
+                currentRightTriggerValues[0] = (byte)EditorGUILayout.IntSlider("Start Position", (int)currentRightTriggerValues[0], 0, 255);
+                currentRightTriggerValues[1] = (byte)EditorGUILayout.IntSlider("Force", (int)currentRightTriggerValues[1], 0, 255);
+                rightTriggerEffect.effectType = WrapperDS5W_Native.Wrapper_TriggerEffectType.ContinuousResistance;
+                rightTriggerEffect.Union.Continuous.startPosition = currentRightTriggerValues[0];
+                rightTriggerEffect.Union.Continuous.force = currentRightTriggerValues[1];
+                break;
+            case TriggerEffectType.SectionResistance:
+                currentRightTriggerValues[0] = (byte)EditorGUILayout.IntSlider("Start Position", (int)currentRightTriggerValues[0], 0, 255);
+                currentRightTriggerValues[1] = (byte)EditorGUILayout.IntSlider("End Position", (int)currentRightTriggerValues[1], 0, 255);
+                rightTriggerEffect.effectType = WrapperDS5W_Native.Wrapper_TriggerEffectType.SectionResistance;
+                rightTriggerEffect.Union.Section.startPosition = currentRightTriggerValues[0];
+                rightTriggerEffect.Union.Section.endPosition = currentRightTriggerValues[1];
+                break;
+            case TriggerEffectType.EffectEx:
+                currentLeftTriggerKeepEffect = EditorGUILayout.Toggle("Keep Effect", currentLeftTriggerKeepEffect);
+                currentRightTriggerValues[0] = (byte)EditorGUILayout.IntSlider("Start Position", (int)currentRightTriggerValues[0], 0, 255);
+                currentRightTriggerValues[1] = (byte)EditorGUILayout.IntSlider("Begin Force", (int)currentRightTriggerValues[1], 0, 255);
+                currentRightTriggerValues[2] = (byte)EditorGUILayout.IntSlider("Middle Force", (int)currentRightTriggerValues[2], 0, 255);
+                currentRightTriggerValues[3] = (byte)EditorGUILayout.IntSlider("End Force", (int)currentRightTriggerValues[3], 0, 255);
+                currentRightTriggerValues[4] = (byte)EditorGUILayout.IntSlider("Frequency", (int)currentRightTriggerValues[4], 0, 255);
+                rightTriggerEffect.effectType = WrapperDS5W_Native.Wrapper_TriggerEffectType.EffectEx;
+                rightTriggerEffect.Union.EffectEx.startPosition = currentRightTriggerValues[0];
+                rightTriggerEffect.Union.EffectEx.beginForce = currentRightTriggerValues[1];
+                rightTriggerEffect.Union.EffectEx.middleForce = currentRightTriggerValues[2];
+                rightTriggerEffect.Union.EffectEx.frequency = currentRightTriggerValues[3];
+                rightTriggerEffect.Union.EffectEx.beginForce = currentRightTriggerValues[4];
+                rightTriggerEffect.Union.EffectEx.keepEffect = currentRightTriggerKeepEffect == false ? (byte)0x00 : (byte)0x01;
+                break;
+            default: break;
+        }
     }
 
     private void StopAllHapticsOnController()
@@ -192,5 +313,41 @@ public class DualSenseHapticsWindow : EditorWindow
         triggerEffect.effectType = WrapperDS5W_Native.Wrapper_TriggerEffectType.NoResitance;
 
         controller.SetTriggerEffect(0, WrapperDS5W_Native.Wrapper_Side.LEFT, triggerEffect);
+        controller.SetTriggerEffect(0, WrapperDS5W_Native.Wrapper_Side.RIGHT, triggerEffect);
+    }
+
+    private void SavePreset()
+    {
+        string path = $"{currentPresetPath}{currentPresetName}.asset";
+        HapticPreset existing = AssetDatabase.LoadAssetAtPath<HapticPreset>(path);
+
+        if (existing == null) // Create a new asset
+        {
+            HapticPreset newPreset = Instantiate(currentPreset);
+            AssetDatabase.CreateAsset(newPreset, path); 
+            currentPreset = newPreset;
+        }
+        else // Overwrite an existing asset
+        {
+            if (EditorUtility.DisplayDialog("Overwrite Preset?", $"Preset '{currentPresetName}' already exists.\nOverwrite it?", "Confirm", "Cancel"))
+            {
+                Undo.RecordObject(existing, "Overwrite Preset");
+                CopyPresetData(existing);
+                EditorUtility.SetDirty(existing);
+                AssetDatabase.SaveAssets();
+                currentPreset = existing;
+            }
+        }
+    }
+
+    private void CopyPresetData(HapticPreset _target)
+    {
+        _target.presetName = currentPresetName;
+
+        _target.leftRumble = currentPreset.leftRumble;
+        _target.rightRumble = currentPreset.rightRumble;
+
+        _target.leftTriggerEffect = currentPreset.leftTriggerEffect;
+        _target.rightTriggerEffect = currentPreset.rightTriggerEffect;
     }
 }

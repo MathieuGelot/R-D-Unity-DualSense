@@ -132,7 +132,7 @@ public class WrapperDS5W_Handler : IDisposable
     {
         EnsureInit();
 
-        // WrapperDS5W_Native.SetTriggerEffect(_id, _trigger, _effect);
+        WrapperDS5W_Native.SetTriggerEffect(_id, _trigger, _effect);
         if (_showLogs)
         {
             ShowLogs();

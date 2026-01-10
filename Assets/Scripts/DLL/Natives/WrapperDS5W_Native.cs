@@ -66,8 +66,8 @@ public class WrapperDS5W_Native
     public enum Wrapper_TriggerEffectType : byte
     {
         NoResitance = 0x00,
-        ContinuousResitance = 0x01,
-        SectionResitance = 0x02,
+        ContinuousResistance = 0x01,
+        SectionResistance = 0x02,
         EffectEx = 0x26,
         Calibrate = 0xFC
     }
@@ -144,19 +144,24 @@ public class WrapperDS5W_Native
     public struct Wrapper_TriggerEffect
     {
         public Wrapper_TriggerEffectType effectType;
-
         public TriggerEffectUnion Union;
-        public ContinuousEffect Continuous => Union.Continuous;
-        public SectionEffect Section => Union.Section;
-        public EffectExEffect EffectEx => Union.EffectEx;
     }
 
     [StructLayout(LayoutKind.Explicit, Pack = 1)]
     public struct TriggerEffectUnion
     {
-        [FieldOffset(0)]
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
-        public byte[] _u1_raw;
+        [FieldOffset(0)] 
+        public byte u1_0;
+        [FieldOffset(1)] 
+        public byte u1_1;
+        [FieldOffset(2)] 
+        public byte u1_2;
+        [FieldOffset(3)] 
+        public byte u1_3;
+        [FieldOffset(4)] 
+        public byte u1_4;
+        [FieldOffset(5)] 
+        public byte u1_5;
 
         [FieldOffset(0)]
         public ContinuousEffect Continuous;
@@ -174,9 +179,10 @@ public class WrapperDS5W_Native
     {
         public byte startPosition;
         public byte force;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public byte[] _pad;
+        public byte pad0;
+        public byte pad1;
+        public byte pad2;
+        public byte pad3;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -184,19 +190,17 @@ public class WrapperDS5W_Native
     {
         public byte startPosition;
         public byte endPosition;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public byte[] _pad;
+        public byte pad0;
+        public byte pad1;
+        public byte pad2;
+        public byte pad3;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct EffectExEffect
     {
         public byte startPosition;
-
-        [MarshalAs(UnmanagedType.I1)]
-        public bool keepEffect;
-
+        public byte keepEffect; // 0 or 1 (used this as a boolean)
         public byte beginForce;
         public byte middleForce;
         public byte endForce;
