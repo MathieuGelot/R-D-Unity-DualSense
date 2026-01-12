@@ -65,9 +65,10 @@ public class WrapperDS5W_Native
 
     public enum Wrapper_TriggerEffectType : byte
     {
+        NoResistance = 0x00,
         ContinuousResistance = 0x01,
         SectionResistance = 0x02,
-        EffectEx = 0x26,
+        EffectEx = 0x26
     }
 
     public enum Wrapper_LedBrightness : byte

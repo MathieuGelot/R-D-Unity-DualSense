@@ -26,12 +26,14 @@ public class DualSenseHapticsWindow : EditorWindow
     // Setters
     public enum TriggerEffectType
     {
+        NoResistance,
         ContinuousResistance,
         SectionResistance,
         EffectEx
     }
-    TriggerEffectType currentLeftTriggerType = TriggerEffectType.ContinuousResistance;
-    TriggerEffectType currentRightTriggerType = TriggerEffectType.ContinuousResistance;
+
+    TriggerEffectType currentLeftTriggerType = TriggerEffectType.NoResistance;
+    TriggerEffectType currentRightTriggerType = TriggerEffectType.NoResistance;
     byte[] currentLeftTriggerValues = new byte[5];
     bool currentLeftTriggerKeepEffect = false;
     byte[] currentRightTriggerValues = new byte[5];
@@ -54,7 +56,7 @@ public class DualSenseHapticsWindow : EditorWindow
     Vector2 crossNorm = new Vector2(0.74f, 0.5223f);
 
     // Default Window Rect
-    static Rect windowRect = new Rect(300, 50, 1500, 1250);
+    static Rect windowRect = new Rect(300, 50, 950, 800);
 
     // Others
     bool playHaptics = true;

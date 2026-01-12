@@ -28,6 +28,8 @@ public class WrapperTriggerEffectDrawer : PropertyDrawer
 
             switch (effect.effectType)
             {
+                case WrapperDS5W_Native.Wrapper_TriggerEffectType.NoResistance:
+                    break;
                 case WrapperDS5W_Native.Wrapper_TriggerEffectType.ContinuousResistance:
                     DrawContinuousResistanceEffect(new Rect(position.x, y, position.width, lineHeight), ref effect);
                     break;
