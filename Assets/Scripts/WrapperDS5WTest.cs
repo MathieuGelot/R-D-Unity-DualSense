@@ -1,28 +1,37 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class WrapperDS5WTest : MonoBehaviour
 {
+    [SerializeField]
+    List<HapticPreset> presets = new List<HapticPreset>();
     WrapperDS5W_Handler wrapperDS5W;
+    [SerializeField]
+    private int controllerID = 0;
+
+    private void Awake()
+    {
+        Debug.Log("0");
+    }
+
     void Start()
     {
         wrapperDS5W = new WrapperDS5W_Handler(true);
-        wrapperDS5W.CreateDevice(0, true);
+        wrapperDS5W.CreateDevice(controllerID, true);
     }
 
     void Update()
     {
-        wrapperDS5W.Update();
-        if (wrapperDS5W.GetButtonState(0, WrapperDS5W_Native.Wrapper_Buttons.CROSS, true))
+        wrapperDS5W.Update(controllerID);
+        if (wrapperDS5W.GetButtonState(controllerID, WrapperDS5W_Native.Wrapper_Buttons.CROSS, true))
         {
-            Debug.Log("Cross has been pressed");
-            wrapperDS5W.SetRumbleEffect(0, WrapperDS5W_Native.Wrapper_Side.LEFT, 0xCF);
+            if(presets.Count > 0)
+            {
+                wrapperDS5W.PlayHapticsPreset(controllerID, presets[0]);
+            }
         }
-        else
-        {
-            wrapperDS5W.SetRumbleEffect(0, WrapperDS5W_Native.Wrapper_Side.LEFT, 0x00);
-        }
-        wrapperDS5W.SetRumbleEffect(0, WrapperDS5W_Native.Wrapper_Side.RIGHT, 0x10);
     }
+
     private void OnDestroy()
     {
         wrapperDS5W?.Dispose();

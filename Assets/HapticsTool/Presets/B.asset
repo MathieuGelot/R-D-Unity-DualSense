@@ -16,6 +16,6 @@ MonoBehaviour:
   leftRumble: 119
   rightRumble: 0
   leftTriggerEffect:
-    effectType: 38
+    effectType: 1
   rightTriggerEffect:
-    effectType: 0
+    effectType: 1

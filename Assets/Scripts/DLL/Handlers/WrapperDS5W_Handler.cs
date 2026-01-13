@@ -42,13 +42,25 @@ public class WrapperDS5W_Handler : IDisposable
         }
     }
 
-    public void Update(bool _showLogs = false)
+    public void Update(int _id, bool _autoResetEffect = true, bool _showLogs = false)
     {
         EnsureInit();
         WrapperDS5W_Native.Update();
+
         if (_showLogs)
         {
             ShowLogs();
+        }
+
+        if (_autoResetEffect)
+        {
+            WrapperDS5W_Native.Wrapper_TriggerEffect triggerEffect = new WrapperDS5W_Native.Wrapper_TriggerEffect();
+            triggerEffect.effectType = 0x00; // No resistance
+
+            SetTriggerEffect(_id, WrapperDS5W_Native.Wrapper_Side.LEFT, triggerEffect, _showLogs);
+            SetTriggerEffect(_id, WrapperDS5W_Native.Wrapper_Side.RIGHT, triggerEffect, _showLogs);
+            SetRumbleEffect(_id, WrapperDS5W_Native.Wrapper_Side.LEFT, 0x00, _showLogs);
+            SetRumbleEffect(_id, WrapperDS5W_Native.Wrapper_Side.RIGHT, 0x00, _showLogs);
         }
     }
 
@@ -136,6 +148,14 @@ public class WrapperDS5W_Handler : IDisposable
         {
             ShowLogs();
         }
+    }
+
+    public void PlayHapticsPreset(int _id, HapticPreset _preset, bool _showLogs = false)
+    {
+        SetTriggerEffect(_id, WrapperDS5W_Native.Wrapper_Side.LEFT, _preset.leftTriggerEffect);
+        SetTriggerEffect(_id, WrapperDS5W_Native.Wrapper_Side.RIGHT, _preset.rightTriggerEffect);
+        SetRumbleEffect(_id, WrapperDS5W_Native.Wrapper_Side.LEFT, _preset.leftRumble);
+        SetRumbleEffect(_id, WrapperDS5W_Native.Wrapper_Side.RIGHT, _preset.rightRumble);
     }
 
     private void EnsureInit()
