@@ -1,0 +1,14 @@
+{
+  "name": "com.MathieuGelot.DualSenseHapticsMaker",
+  "version": "1.0.0",
+  "displayName": "DualSense Haptics Maker Tools",
+  "description": "This package allow you to make haptics preset for DualSense controller (Playstation 5 controllers).\nTo use the tools go to Tools/DualSense Haptics",
+  "unity": "6000.3.0f1",
+  "documentationUrl": "https://example.com/",
+  "changelogUrl": "https://example.com/changelog.html",
+  "licensesUrl": "https://example.com/licensing.html",
+  "author": {
+    "name": "Mathieu Gelot",
+    "url": "https://github.com/MathieuGelot/R-D-Unity-DualSense"
+  }
+}

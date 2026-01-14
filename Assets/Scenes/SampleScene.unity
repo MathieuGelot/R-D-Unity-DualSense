@@ -485,7 +485,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1393997414}
-  - component: {fileID: 1393997413}
+  - component: {fileID: 1393997415}
   m_Layer: 0
   m_Name: WrapperDS5WObj
   m_TagString: Untagged
@@ -493,21 +493,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1393997413
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1393997412}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73131121d90eec9488633e2bac2cb337, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WrapperDS5WTest
-  presets:
-  - {fileID: 11400000, guid: 42451c7b0fd70c24485ea62f35b2f643, type: 2}
-  controllerID: 0
 --- !u!4 &1393997414
 Transform:
   m_ObjectHideFlags: 0
@@ -523,6 +508,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1393997415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1393997412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c56bed4e4d58b0844846b190cb00c09a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UseCaseSample
+  presets:
+  - {fileID: 11400000, guid: 94c85c0c41d95f742ac9c8c3b72f32f3, type: 2}
+  - {fileID: 11400000, guid: 42451c7b0fd70c24485ea62f35b2f643, type: 2}
+  controllerID: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
