@@ -31,8 +31,8 @@ public class DualSenseHapticsWindow : EditorWindow
     bool currentLeftTriggerKeepEffect = false;
     byte[] currentRightTriggerValues = new byte[5];
     bool currentRightTriggerKeepEffect = false;
-    WrapperDS5W_Native.Wrapper_TriggerEffect leftTriggerEffect = new WrapperDS5W_Native.Wrapper_TriggerEffect();
-    WrapperDS5W_Native.Wrapper_TriggerEffect rightTriggerEffect = new WrapperDS5W_Native.Wrapper_TriggerEffect();
+    WrapperDS5W_Handler.TriggerEffect leftTriggerEffect = new WrapperDS5W_Handler.TriggerEffect();
+    WrapperDS5W_Handler.TriggerEffect rightTriggerEffect = new WrapperDS5W_Handler.TriggerEffect();
     byte leftRumble;
     byte rightRumble;
 
@@ -229,15 +229,15 @@ public class DualSenseHapticsWindow : EditorWindow
                 currentLeftTriggerValues[0] = (byte)EditorGUILayout.IntSlider("Start Position", (int)currentLeftTriggerValues[0], 0, 255);
                 currentLeftTriggerValues[1] = (byte)EditorGUILayout.IntSlider("Force", (int)currentLeftTriggerValues[1], 0, 255);
                 leftTriggerEffect.effectType = WrapperDS5W_Native.Wrapper_TriggerEffectType.ContinuousResistance;
-                leftTriggerEffect.Union.Continuous.startPosition = currentLeftTriggerValues[0];
-                leftTriggerEffect.Union.Continuous.force = currentLeftTriggerValues[1];
+                leftTriggerEffect.u1_0 = currentLeftTriggerValues[0];
+                leftTriggerEffect.u1_1 = currentLeftTriggerValues[1];
                 break;
             case WrapperDS5W_Native.Wrapper_TriggerEffectType.SectionResistance:
                 currentLeftTriggerValues[0] = (byte)EditorGUILayout.IntSlider("Start Position", (int)currentLeftTriggerValues[0], 0, 255);
                 currentLeftTriggerValues[1] = (byte)EditorGUILayout.IntSlider("End Position", (int)currentLeftTriggerValues[1], 0, 255);
                 leftTriggerEffect.effectType = WrapperDS5W_Native.Wrapper_TriggerEffectType.SectionResistance;
-                leftTriggerEffect.Union.Section.startPosition = currentLeftTriggerValues[0];
-                leftTriggerEffect.Union.Section.endPosition = currentLeftTriggerValues[1];
+                leftTriggerEffect.u1_0 = currentLeftTriggerValues[0];
+                leftTriggerEffect.u1_1 = currentLeftTriggerValues[1];
                 break;
             case WrapperDS5W_Native.Wrapper_TriggerEffectType.EffectEx:
                 currentLeftTriggerKeepEffect = EditorGUILayout.Toggle("Keep Effect", currentLeftTriggerKeepEffect);
@@ -247,12 +247,12 @@ public class DualSenseHapticsWindow : EditorWindow
                 currentLeftTriggerValues[3] = (byte)EditorGUILayout.IntSlider("End Force", (int)currentLeftTriggerValues[3], 0, 255);
                 currentLeftTriggerValues[4] = (byte)EditorGUILayout.IntSlider("Frequency", (int)currentLeftTriggerValues[4], 0, 255);
                 leftTriggerEffect.effectType = WrapperDS5W_Native.Wrapper_TriggerEffectType.EffectEx;
-                leftTriggerEffect.Union.EffectEx.startPosition = currentLeftTriggerValues[0];
-                leftTriggerEffect.Union.EffectEx.beginForce = currentLeftTriggerValues[1];
-                leftTriggerEffect.Union.EffectEx.middleForce = currentLeftTriggerValues[2];
-                leftTriggerEffect.Union.EffectEx.frequency = currentLeftTriggerValues[3];
-                leftTriggerEffect.Union.EffectEx.beginForce = currentLeftTriggerValues[4];
-                leftTriggerEffect.Union.EffectEx.keepEffect = currentLeftTriggerKeepEffect == false ? (byte)0x00 : (byte)0x01;
+                leftTriggerEffect.u1_0 = currentLeftTriggerValues[0];
+                leftTriggerEffect.u1_1 = currentLeftTriggerKeepEffect == false ? (byte)0x00 : (byte)0x01;
+                leftTriggerEffect.u1_2 = currentLeftTriggerValues[1];
+                leftTriggerEffect.u1_3 = currentLeftTriggerValues[2];
+                leftTriggerEffect.u1_4 = currentLeftTriggerValues[3];
+                leftTriggerEffect.u1_5 = currentLeftTriggerValues[4];
                 break;
             default: break;
         }
@@ -271,15 +271,15 @@ public class DualSenseHapticsWindow : EditorWindow
                 currentRightTriggerValues[0] = (byte)EditorGUILayout.IntSlider("Start Position", (int)currentRightTriggerValues[0], 0, 255);
                 currentRightTriggerValues[1] = (byte)EditorGUILayout.IntSlider("Force", (int)currentRightTriggerValues[1], 0, 255);
                 rightTriggerEffect.effectType = WrapperDS5W_Native.Wrapper_TriggerEffectType.ContinuousResistance;
-                rightTriggerEffect.Union.Continuous.startPosition = currentRightTriggerValues[0];
-                rightTriggerEffect.Union.Continuous.force = currentRightTriggerValues[1];
+                rightTriggerEffect.u1_0 = currentRightTriggerValues[0];
+                rightTriggerEffect.u1_1 = currentRightTriggerValues[1];
                 break;
             case WrapperDS5W_Native.Wrapper_TriggerEffectType.SectionResistance:
                 currentRightTriggerValues[0] = (byte)EditorGUILayout.IntSlider("Start Position", (int)currentRightTriggerValues[0], 0, 255);
                 currentRightTriggerValues[1] = (byte)EditorGUILayout.IntSlider("End Position", (int)currentRightTriggerValues[1], 0, 255);
                 rightTriggerEffect.effectType = WrapperDS5W_Native.Wrapper_TriggerEffectType.SectionResistance;
-                rightTriggerEffect.Union.Section.startPosition = currentRightTriggerValues[0];
-                rightTriggerEffect.Union.Section.endPosition = currentRightTriggerValues[1];
+                rightTriggerEffect.u1_0 = currentRightTriggerValues[0];
+                rightTriggerEffect.u1_1 = currentRightTriggerValues[1];
                 break;
             case WrapperDS5W_Native.Wrapper_TriggerEffectType.EffectEx:
                 currentLeftTriggerKeepEffect = EditorGUILayout.Toggle("Keep Effect", currentLeftTriggerKeepEffect);
@@ -289,12 +289,12 @@ public class DualSenseHapticsWindow : EditorWindow
                 currentRightTriggerValues[3] = (byte)EditorGUILayout.IntSlider("End Force", (int)currentRightTriggerValues[3], 0, 255);
                 currentRightTriggerValues[4] = (byte)EditorGUILayout.IntSlider("Frequency", (int)currentRightTriggerValues[4], 0, 255);
                 rightTriggerEffect.effectType = WrapperDS5W_Native.Wrapper_TriggerEffectType.EffectEx;
-                rightTriggerEffect.Union.EffectEx.startPosition = currentRightTriggerValues[0];
-                rightTriggerEffect.Union.EffectEx.beginForce = currentRightTriggerValues[1];
-                rightTriggerEffect.Union.EffectEx.middleForce = currentRightTriggerValues[2];
-                rightTriggerEffect.Union.EffectEx.frequency = currentRightTriggerValues[3];
-                rightTriggerEffect.Union.EffectEx.beginForce = currentRightTriggerValues[4];
-                rightTriggerEffect.Union.EffectEx.keepEffect = currentRightTriggerKeepEffect == false ? (byte)0x00 : (byte)0x01;
+                rightTriggerEffect.u1_0 = currentRightTriggerValues[0];
+                rightTriggerEffect.u1_1 = currentRightTriggerKeepEffect == false ? (byte)0x00 : (byte)0x01;
+                rightTriggerEffect.u1_2 = currentRightTriggerValues[1];
+                rightTriggerEffect.u1_3 = currentRightTriggerValues[2];
+                rightTriggerEffect.u1_4 = currentRightTriggerValues[3];
+                rightTriggerEffect.u1_5 = currentRightTriggerValues[4];
                 break;
             default: break;
         }
@@ -305,9 +305,8 @@ public class DualSenseHapticsWindow : EditorWindow
         controller.SetRumbleEffect(controllerID, WrapperDS5W_Native.Wrapper_Side.LEFT, 0x00);
         controller.SetRumbleEffect(controllerID, WrapperDS5W_Native.Wrapper_Side.RIGHT, 0x00);
 
-        WrapperDS5W_Native.Wrapper_TriggerEffect triggerEffect = new WrapperDS5W_Native.Wrapper_TriggerEffect();
-
-        triggerEffect.effectType = 0x00; // No resistance
+        WrapperDS5W_Handler.TriggerEffect triggerEffect = new WrapperDS5W_Handler.TriggerEffect();
+        triggerEffect.effectType = WrapperDS5W_Native.Wrapper_TriggerEffectType.NoResistance; 
 
         controller.SetTriggerEffect(controllerID, WrapperDS5W_Native.Wrapper_Side.LEFT, triggerEffect);
         controller.SetTriggerEffect(controllerID, WrapperDS5W_Native.Wrapper_Side.RIGHT, triggerEffect);
@@ -360,23 +359,60 @@ public class DualSenseHapticsWindow : EditorWindow
         leftRumble = currentPreset.leftRumble;
         rightRumble = currentPreset.rightRumble;
 
-        currentLeftTriggerType = leftTriggerEffect.effectType;
-        currentRightTriggerType = rightTriggerEffect.effectType;
-
         leftTriggerEffect = currentPreset.leftTriggerEffect;
         rightTriggerEffect = currentPreset.rightTriggerEffect;
 
-        currentLeftTriggerValues[0] = leftTriggerEffect.Union.u1_0;
-        currentLeftTriggerValues[1] = leftTriggerEffect.Union.u1_1;
-        currentLeftTriggerValues[2] = leftTriggerEffect.Union.u1_2;
-        currentLeftTriggerValues[3] = leftTriggerEffect.Union.u1_3;
-        currentLeftTriggerValues[4] = leftTriggerEffect.Union.u1_4;
+        currentLeftTriggerType = leftTriggerEffect.effectType;
+        currentRightTriggerType = rightTriggerEffect.effectType;
 
-        currentRightTriggerValues[0] = rightTriggerEffect.Union.u1_0;
-        currentRightTriggerValues[1] = rightTriggerEffect.Union.u1_1;
-        currentRightTriggerValues[2] = rightTriggerEffect.Union.u1_2;
-        currentRightTriggerValues[3] = rightTriggerEffect.Union.u1_3;
-        currentRightTriggerValues[4] = rightTriggerEffect.Union.u1_4;
+        switch (leftTriggerEffect.effectType)
+        {
+            case WrapperDS5W_Native.Wrapper_TriggerEffectType.NoResistance:
+                break;
+            case WrapperDS5W_Native.Wrapper_TriggerEffectType.ContinuousResistance:
+                currentLeftTriggerValues[0] = leftTriggerEffect.u1_0;
+                currentLeftTriggerValues[1] = leftTriggerEffect.u1_1;
+                break;
+            case WrapperDS5W_Native.Wrapper_TriggerEffectType.SectionResistance:
+                currentLeftTriggerValues[0] = leftTriggerEffect.u1_0;
+                currentLeftTriggerValues[1] = leftTriggerEffect.u1_1;
+                break;
+            case WrapperDS5W_Native.Wrapper_TriggerEffectType.EffectEx:
+                currentLeftTriggerValues[0] = leftTriggerEffect.u1_0;
+                currentLeftTriggerKeepEffect = leftTriggerEffect.u1_1 == 0x00 ? false : true;
+                currentLeftTriggerValues[1] = leftTriggerEffect.u1_2;
+                currentLeftTriggerValues[2] = leftTriggerEffect.u1_3;
+                currentLeftTriggerValues[3] = leftTriggerEffect.u1_4;
+                currentLeftTriggerValues[4] = leftTriggerEffect.u1_5;
+                break;
+            default:
+                break;
+        }
+
+
+        switch (rightTriggerEffect.effectType)
+        {
+            case WrapperDS5W_Native.Wrapper_TriggerEffectType.NoResistance:
+                break;
+            case WrapperDS5W_Native.Wrapper_TriggerEffectType.ContinuousResistance:
+                currentRightTriggerValues[0] = rightTriggerEffect.u1_0;
+                currentRightTriggerValues[1] = rightTriggerEffect.u1_1;
+                break;
+            case WrapperDS5W_Native.Wrapper_TriggerEffectType.SectionResistance:
+                currentRightTriggerValues[0] = rightTriggerEffect.u1_0;
+                currentRightTriggerValues[1] = rightTriggerEffect.u1_1;
+                break;
+            case WrapperDS5W_Native.Wrapper_TriggerEffectType.EffectEx:
+                currentRightTriggerValues[0] = rightTriggerEffect.u1_0;
+                currentLeftTriggerKeepEffect = rightTriggerEffect.u1_1 == 0x00 ? false : true;
+                currentRightTriggerValues[1] = rightTriggerEffect.u1_2;
+                currentRightTriggerValues[2] = rightTriggerEffect.u1_3;
+                currentRightTriggerValues[3] = rightTriggerEffect.u1_4;
+                currentRightTriggerValues[4] = rightTriggerEffect.u1_5;
+                break;
+            default:
+                break;
+        }
     }
 
     private void SetPresetData(HapticPreset _target)
@@ -388,17 +424,5 @@ public class DualSenseHapticsWindow : EditorWindow
 
         _target.leftTriggerEffect = leftTriggerEffect;
         _target.rightTriggerEffect = rightTriggerEffect;
-
-        _target.leftTriggerEffect.Union.u1_0 = leftTriggerEffect.Union.u1_0;
-        _target.leftTriggerEffect.Union.u1_1 = leftTriggerEffect.Union.u1_1;
-        _target.leftTriggerEffect.Union.u1_2 = leftTriggerEffect.Union.u1_2;
-        _target.leftTriggerEffect.Union.u1_3 = leftTriggerEffect.Union.u1_3;
-        _target.leftTriggerEffect.Union.u1_4 = leftTriggerEffect.Union.u1_4;
-
-        _target.rightTriggerEffect.Union.u1_0 = rightTriggerEffect.Union.u1_0;
-        _target.rightTriggerEffect.Union.u1_1 = rightTriggerEffect.Union.u1_1;
-        _target.rightTriggerEffect.Union.u1_2 = rightTriggerEffect.Union.u1_2;
-        _target.rightTriggerEffect.Union.u1_3 = rightTriggerEffect.Union.u1_3;
-        _target.rightTriggerEffect.Union.u1_4 = rightTriggerEffect.Union.u1_4;
     }
 }

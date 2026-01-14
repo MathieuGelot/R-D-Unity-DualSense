@@ -13,9 +13,21 @@ MonoBehaviour:
   m_Name: B
   m_EditorClassIdentifier: Assembly-CSharp::HapticPreset
   presetName: B
-  leftRumble: 119
-  rightRumble: 0
+  leftRumble: 186
+  rightRumble: 152
   leftTriggerEffect:
-    effectType: 1
+    effectType: 38
+    u1_0: 0
+    u1_1: 1
+    u1_2: 255
+    u1_3: 130
+    u1_4: 130
+    u1_5: 255
   rightTriggerEffect:
-    effectType: 1
+    effectType: 2
+    u1_0: 86
+    u1_1: 214
+    u1_2: 0
+    u1_3: 0
+    u1_4: 0
+    u1_5: 0

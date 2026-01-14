@@ -11,6 +11,6 @@ public class HapticPreset : ScriptableObject
     public byte rightRumble = 0x00;
 
     [Header("Triggers")]
-    public WrapperDS5W_Native.Wrapper_TriggerEffect leftTriggerEffect = new WrapperDS5W_Native.Wrapper_TriggerEffect();
-    public WrapperDS5W_Native.Wrapper_TriggerEffect rightTriggerEffect = new WrapperDS5W_Native.Wrapper_TriggerEffect();
+    public WrapperDS5W_Handler.TriggerEffect leftTriggerEffect = new WrapperDS5W_Handler.TriggerEffect();
+    public WrapperDS5W_Handler.TriggerEffect rightTriggerEffect = new WrapperDS5W_Handler.TriggerEffect();
 }

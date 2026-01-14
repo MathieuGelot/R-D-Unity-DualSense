@@ -506,7 +506,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WrapperDS5WTest
   presets:
-  - {fileID: 11400000, guid: a1036f3b3967d75418508503428f9e6a, type: 2}
+  - {fileID: 11400000, guid: 42451c7b0fd70c24485ea62f35b2f643, type: 2}
   controllerID: 0
 --- !u!4 &1393997414
 Transform:

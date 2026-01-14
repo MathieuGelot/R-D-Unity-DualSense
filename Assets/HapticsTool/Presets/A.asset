@@ -17,5 +17,17 @@ MonoBehaviour:
   rightRumble: 0
   leftTriggerEffect:
     effectType: 1
+    u1_0: 0
+    u1_1: 255
+    u1_2: 0
+    u1_3: 0
+    u1_4: 0
+    u1_5: 0
   rightTriggerEffect:
     effectType: 2
+    u1_0: 44
+    u1_1: 80
+    u1_2: 0
+    u1_3: 0
+    u1_4: 0
+    u1_5: 0
