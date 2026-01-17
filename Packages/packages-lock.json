@@ -1,5 +1,11 @@
 {
   "dependencies": {
+    "com.mathieugelot.dualsense-haptics-tool": {
+      "version": "file:DualSenseHapticsTool",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.nullkal.unisense": {
       "version": "https://github.com/nullkal/UniSense.git",
       "depth": 0,

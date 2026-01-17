@@ -1,0 +1,16 @@
+{
+    "name": "MathieuGelot.DualSenseHapticsTool",
+    "rootNamespace": "",
+    "references": [
+        "GUID:15d31cfc5abe7854783aceb1f1e0710e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

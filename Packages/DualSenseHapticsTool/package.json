@@ -1,0 +1,10 @@
+{
+  "name": "com.mathieugelot.dualsense-haptics-tool",
+  "version": "1.2.3",
+  "displayName": "DualSense Haptics Tool",
+  "description": "Tool for DualSense haptics in Unity",
+  "unity": "6000.3",
+  "author": {
+    "name": "Mathieu Gelot"
+  }
+}
