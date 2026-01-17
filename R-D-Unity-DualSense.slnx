@@ -1,0 +1,6 @@
+﻿<Solution>
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="MathieuGelot.DualSenseHapticsTool.csproj" />
+  <Project Path="MathieuGelot.DualSenseHapticsTool.Editor.csproj" />
+</Solution>

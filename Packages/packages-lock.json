@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.mathieugelot.dualsense-haptics-tool": {
-      "version": "file:DualSenseHapticsTool",
+      "version": "file:com.mathieugelot.dualsense-haptics-tool",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}

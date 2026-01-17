@@ -13,8 +13,8 @@ public class DualSenseHapticsWindow : EditorWindow
     int controllerID = 0;
 
     // Path
-    string texturesPath = "Assets/HapticsTool/Sprites/Btns/";
-    string currentPresetPath = "Assets/HapticsTool/Presets/";
+    string texturesPath = "Packages/com.mathieugelot.dualsense-haptics-tool/Assets/";
+    string currentPresetPath = "Assets/DualSenseHapticsTool/Presets/";
     string currentPresetName = "None";
 
     // Textures for UI
@@ -66,8 +66,24 @@ public class DualSenseHapticsWindow : EditorWindow
         window.ShowUtility(); // Undockable (used to avoid resize)
     }
 
-    private void OnEnable()
+    public void EnsureFoldersExist()
     {
+#if UNITY_EDITOR
+        if (!AssetDatabase.IsValidFolder("Assets/DualSenseHapticsTool"))
+        {
+            AssetDatabase.CreateFolder("Assets", "DualSenseHapticsTool");
+        }
+
+        if (!AssetDatabase.IsValidFolder(currentPresetPath))
+        {
+            AssetDatabase.CreateFolder("Assets/DualSenseHapticsTool", "Presets");
+        }
+#endif
+    }
+
+private void OnEnable()
+    {
+        EnsureFoldersExist();
         defaultPreset = ScriptableObject.CreateInstance<HapticPreset>();
         currentPreset = defaultPreset;
         currentPresetName = currentPreset.presetName;
@@ -83,11 +99,11 @@ public class DualSenseHapticsWindow : EditorWindow
 
         // Loading Texture2D
         //gamepadTex = AssetDatabase.LoadAssetAtPath<Texture2D>(texturesPath + "PS5_Diagram" + ".png");
-        gamepadTex = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/HapticsTool/Sprites/PS5_Diagram" + ".png");
-        crossTex = AssetDatabase.LoadAssetAtPath<Texture2D>(texturesPath + "PS5_Cross" + ".png");
-        triangleTex = AssetDatabase.LoadAssetAtPath<Texture2D>(texturesPath + "PS5_Triangle" + ".png");
-        circleTex = AssetDatabase.LoadAssetAtPath<Texture2D>(texturesPath + "PS5_Circle" + ".png");
-        squareTex = AssetDatabase.LoadAssetAtPath<Texture2D>(texturesPath + "PS5_Square" + ".png");
+        gamepadTex = AssetDatabase.LoadAssetAtPath<Texture2D>(texturesPath + "PS5_Diagram" + ".png");
+        crossTex = AssetDatabase.LoadAssetAtPath<Texture2D>(texturesPath + "Btns/" + "PS5_Cross" + ".png");
+        triangleTex = AssetDatabase.LoadAssetAtPath<Texture2D>(texturesPath + "Btns/" + "PS5_Triangle" + ".png");
+        circleTex = AssetDatabase.LoadAssetAtPath<Texture2D>(texturesPath + "Btns/" + "PS5_Circle" + ".png");
+        squareTex = AssetDatabase.LoadAssetAtPath<Texture2D>(texturesPath + "Btns/" + "PS5_Square" + ".png");
     }
 
     private void OnDisable()
@@ -314,6 +330,7 @@ public class DualSenseHapticsWindow : EditorWindow
 
     private void SavePreset()
     {
+
         string path = $"{currentPresetPath}{currentPresetName}.asset";
         HapticPreset existing = AssetDatabase.LoadAssetAtPath<HapticPreset>(path);
 
