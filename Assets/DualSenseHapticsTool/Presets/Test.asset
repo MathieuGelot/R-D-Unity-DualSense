@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4871ad5422f96e4db190d64340477d8, type: 3}
+  m_Name: Test
+  m_EditorClassIdentifier: MathieuGelot.DualSenseHapticsTool::HapticPreset
+  presetName: Test
+  leftRumble: 102
+  rightRumble: 124
+  leftTriggerEffect:
+    effectType: 38
+    u1_0: 67
+    u1_1: 1
+    u1_2: 176
+    u1_3: 124
+    u1_4: 207
+    u1_5: 0
+  rightTriggerEffect:
+    effectType: 1
+    u1_0: 0
+    u1_1: 255
+    u1_2: 0
+    u1_3: 0
+    u1_4: 0
+    u1_5: 0
